@@ -68,6 +68,7 @@ checkpatch_filter = [
     ('ath12k_wifi7_dp_mon_parse_he_sig_mu', 'LONG_LINE'),
     ('ath12k_wifi7_dp_mon_rx_handle_ofdma_info', 'LONG_LINE'),
     ('ath12k_wifi7_dp_mon_rx_populate_mu_user_info', 'LONG_LINE'),
+    ('ath12k_wifi7_dp_tx', 'LONG_LINE'),
     ('ath12k_wifi7_mac_op_tx', 'LONG_LINE'),
     ('ath12k_wmi_dcs_interference_event_parser', 'LONG_LINE'),
     ('ath12k_wmi_process_incumbent_signal_interference_evt', 'LONG_LINE'),
