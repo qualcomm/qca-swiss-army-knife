@@ -56,6 +56,7 @@ CHECKPATCH_OPTS = ['--strict', '-q', '--terse', '--no-summary',
 checkpatch_filter = [
     ('ath12k_ce_free_pipes', 'LONG_LINE'),
     ('ath12k_dp_link_peer_map_event', 'LONG_LINE'),
+    ('ath12k_hal_rx_reo_desc_get_drv_link_id_wcn7850', 'LONG_LINE'),
     ('ath12k_mac_peer_cleanup_all', 'LONG_LINE'),
     ('ath12k_wifi7_dp_mon_hal_rx_parse_eht_non_mumimo_user', 'LONG_LINE'),
     ('ath12k_wifi7_dp_mon_hal_rx_parse_eht_sig_ndp', 'LONG_LINE'),
