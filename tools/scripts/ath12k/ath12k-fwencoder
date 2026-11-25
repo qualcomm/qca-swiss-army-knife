@@ -41,6 +41,7 @@ ATH12K_FW_IE_AMSS_IMAGE = 2
 ATH12K_FW_IE_M3_IMAGE = 3
 ATH12K_FW_IE_AMSS_DUALMAC_IMAGE = 4
 ATH12K_FW_IE_AUX_UC_IMAGE = 5
+ATH12K_FW_IE_MCSS_UC_IMAGE = 6
 
 # enum ath12k_fw_features from ath12k/fw.h
 ATH12K_FW_FEATURE_MULTI_QRTR_ID = 0
@@ -293,6 +294,12 @@ class Ath12kFirmwareContainer(object):
     def get_aux_uc_image(self):
         return self.aux_uc_image
 
+    def set_mcss_uc_image(self, mcss_uc_image_name):
+        self.mcss_uc_image = self._load_file(mcss_uc_image_name)
+
+    def get_mcss_uc_image(self):
+        return self.mcss_uc_image
+
     def set_timestamp(self, timestamp):
         self.timestamp = int(timestamp)
 
@@ -335,6 +342,10 @@ class Ath12kFirmwareContainer(object):
             s = s + 'AuxUcImageSize: %s\n' % (len(self.get_aux_uc_image()))
             s = s + 'AuxUcImageCRC32: %08x\n' % (_crc32(self.get_aux_uc_image()))
 
+        if self.get_mcss_uc_image():
+            s = s + 'McssUcImageSize: %s\n' % (len(self.get_mcss_uc_image()))
+            s = s + 'McssUcImageCRC32: %08x\n' % (_crc32(self.get_mcss_uc_image()))
+
         return s.strip()
 
     def load(self, filename):
@@ -356,6 +367,8 @@ class Ath12kFirmwareContainer(object):
                 self.features_bitmap = c.read_bitmap(ATH12K_FW_IE_FEATURES)
             elif e == ATH12K_FW_IE_AUX_UC_IMAGE:
                 self.aux_uc_image = c.elements[e]
+            elif e == ATH12K_FW_IE_MCSS_UC_IMAGE:
+                self.mcss_uc_image = c.elements[e]
             else:
                 print("Unknown IE: ", e)
 
@@ -379,6 +392,9 @@ class Ath12kFirmwareContainer(object):
         if self.aux_uc_image:
             self.container.add_element(ATH12K_FW_IE_AUX_UC_IMAGE, self.aux_uc_image)
 
+        if self.mcss_uc_image:
+            self.container.add_element(ATH12K_FW_IE_MCSS_UC_IMAGE, self.mcss_uc_image)
+
         # FIXME: features should be before amss_image but that breaks
         # the current tests
         if self.features_bitmap:
@@ -396,6 +412,7 @@ class Ath12kFirmwareContainer(object):
         self.m3_image = None
         self.amss_dualmac_image = None
         self.aux_uc_image = None
+        self.mcss_uc_image = None
 
 # to workaround annoying python feature of returning negative hex values
 def hex32(val):
@@ -477,6 +494,10 @@ def dump(options, args):
         name = "aux_ucode.bin"
         print("--aux_uc=%s \\" % name)
 
+    if c.get_mcss_uc_image():
+        name = "mcss_ucode.bin"
+        print("--mcss_uc=%s \\" % name)
+
     print()
 
 
@@ -511,6 +532,11 @@ def extract(options, args):
         write_file(name, c.get_aux_uc_image())
         print('%s extracted: %d B' % (name, len(c.get_aux_uc_image())))
 
+    if c.get_mcss_uc_image():
+        name = "mcss_ucode.bin"
+        write_file(name, c.get_mcss_uc_image())
+        print('%s extracted: %d B' % (name, len(c.get_mcss_uc_image())))
+
     print()
 
 
@@ -544,6 +570,9 @@ def modify(options, args):
 
     if options.aux_uc:
         c.set_aux_uc_image(options.aux_uc)
+
+    if options.mcss_uc:
+        c.set_mcss_uc_image(options.mcss_uc)
 
     if options.features:
         c.set_features(options.features)
@@ -580,6 +609,9 @@ def create(options):
 
     if options.aux_uc:
         c.set_aux_uc_image(options.aux_uc)
+
+    if options.mcss_uc:
+        c.set_mcss_uc_image(options.mcss_uc)
 
     if options.features:
         c.set_features(options.features)
@@ -701,6 +733,9 @@ def main():
     parser.add_option("--aux_uc", action="store", type="string",
                       dest="aux_uc",
                       help='Name of aux_ucode.bin file')
+    parser.add_option("--mcss_uc", action="store", type="string",
+                      dest="mcss_uc",
+                      help='Name of mcss_ucode.bin file')
     parser.add_option("--timestamp", action="store",
                       type="string", dest="timestamp",
                       help='Timestamp to be used (seconds)')
