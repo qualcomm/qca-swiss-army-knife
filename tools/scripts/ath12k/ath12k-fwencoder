@@ -414,6 +414,7 @@ class Ath12kFirmwareContainer(object):
         self.aux_uc_image = None
         self.mcss_uc_image = None
 
+
 # to workaround annoying python feature of returning negative hex values
 def hex32(val):
     return val & 0xffffffff
