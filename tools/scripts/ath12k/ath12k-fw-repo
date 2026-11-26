@@ -46,6 +46,7 @@ BRANCH_BLACKLIST = [
 
 HW_SUBFOLDER_SEP = '@'
 
+
 @functools.total_ordering
 class Hardware():
     def get_path(self):
@@ -561,7 +562,7 @@ def whence_update_extra(linux_firmware, filepaths, version, hw=None):
     #    '  File: ath12k/WCN7850/hw2.0/' or '  Version: ...WCN7850/hw2.0...'
     base_prefix = f'ath12k/{hw_name}/{hw_base_ver}/'
     driver_pat = re.compile(r'^Driver:\s+ath12k\b')
-    section_end    = re.compile(r'^-------+')  # treat --------- line as ath12k section end
+    section_end = re.compile(r'^-------+')  # treat --------- line as ath12k section end
     section_start = None
     insert_pos = None
     for i, line in enumerate(filtered_lines):
@@ -593,7 +594,7 @@ def whence_update_extra(linux_firmware, filepaths, version, hw=None):
     license_relpath = None
     for filepath in filepaths:
         relpath = os.path.relpath(filepath, linux_firmware)
-        if relpath.endswith(NOTICE_FILE): # record Notice.txt here, will add later
+        if relpath.endswith(NOTICE_FILE):  # record Notice.txt here, will add later
             license_relpath = relpath
             continue
         new_lines.append('File: %s\n' % (relpath))
@@ -604,7 +605,7 @@ def whence_update_extra(linux_firmware, filepaths, version, hw=None):
 
     # Add Notice line last here, ensure that Notice.txt is placed at the end
     if license_relpath:
-        new_lines.append(f'File: %s\n' % (license_relpath))
+        new_lines.append('File: %s\n' % (license_relpath))
     else:
         logger.error("Notice.txt is required !")
 
@@ -1028,8 +1029,8 @@ def cmd_install(args):
                 if os.path.isdir(full_path):
                     logger.debug("full_path:%s is a a sub HW version folder, will be handler in other HW instance" % full_path)
                 else:
-                     logger.debug("add filename:%s in to_remove" % to_remove)
-                     to_remove.append(filename)
+                    logger.debug("add filename:%s in to_remove" % to_remove)
+                    to_remove.append(filename)
 
         # investigate what changes are needed
         for filepath in fw.get_files_with_path():
